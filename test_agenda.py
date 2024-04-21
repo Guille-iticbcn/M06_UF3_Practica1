@@ -35,7 +35,7 @@ class TestAgendaEvent(unittest.TestCase):
 class TestMongoDBInterface(unittest.TestCase):
 
     def setUp(self):
-        self.db_interface = MongoDBInterface("mongodb+srv://2023guillermojaume:<BJuxQ3eShBhktxam>@cluster0.qw12na8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", "test_db", "test_collection")
+        self.db_interface = MongoDBInterface("mongodb+srv://2023guillermojaume:BJuxQ3eShBhktxam@cluster0.qw12na8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", "test_db", "test_collection")
 
     def test_create_read_delete(self):
         # Test create
@@ -56,7 +56,7 @@ class TestMongoDBInterface(unittest.TestCase):
 class TestMongoDBPersistence(unittest.TestCase):
 
     def setUp(self):
-        self.db_persistence = MongoDBPersistence("mongodb+srv://2023guillermojaume:<BJuxQ3eShBhktxam>@cluster0.qw12na8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", "test_db", "test_collection", "test_db", "test_collection")
+        self.db_persistence = MongoDBPersistence("mongodb+srv://2023guillermojaume:BJuxQ3eShBhktxam@cluster0.qw12na8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", "test_db", "test_collection")
 
     def test_save_get_update_delete(self):
         # Test save

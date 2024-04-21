@@ -7,15 +7,7 @@ class MongoDBPersistence:
         self.db = self.client[db_name]
         self.collection = self.db[collection_name]
     
-    def save(self, event):
-        event_dict = {
-            "date": event.date,
-            "duration": event.duration,
-            "title": event.title,
-            "description": event.description,
-            "tags": event.tags,
-            "location": event.location
-        }
+    def save(self, event_dict):
         result = self.collection.insert_one(event_dict)
         return result.inserted_id
     
@@ -23,15 +15,7 @@ class MongoDBPersistence:
         event_dict = self.collection.find_one({"_id": ObjectId(event_id)})
         return event_dict
     
-    def update(self, event_id, event):
-        event_dict = {
-            "date": event.date,
-            "duration": event.duration,
-            "title": event.title,
-            "description": event.description,
-            "tags": event.tags,
-            "location": event.location
-        }
+    def update(self, event_id, event_dict):
         result = self.collection.update_one({"_id": ObjectId(event_id)}, {"$set": event_dict})
         return result.modified_count
     
