@@ -1,14 +1,10 @@
 class Usuari:
-    def __init__(self, id, nom, cognom, nacionalitat):
-        self._id = id
+    def __init__(self, nom, cognom, nacionalitat):
         self._nom = nom
         self._cognom = cognom
         self._nacionalitat = nacionalitat
 
-    #GETTERS
-    def get_id(self):
-        return self._id
-    
+    #GETTERS    
     def get_nom(self):
         return self._nom
     
@@ -20,9 +16,6 @@ class Usuari:
     
 
     #SETTERS
-    def set_id(self, id):
-        self._id = id
-
     def set_nom(self, nom):
         self._nom = nom
 
