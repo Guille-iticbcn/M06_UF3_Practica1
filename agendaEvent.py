@@ -4,7 +4,7 @@ class agendaEvent:
         self._duracion = duracion
         self._titulo = titulo
         self._descripcion = descripcion
-        self._tags = tags
+        self._tags = tags #if tags else []
         self._ubicacion = ubicacion
 
     def __str__(self):
