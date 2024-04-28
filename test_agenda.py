@@ -3,6 +3,12 @@ from datetime import datetime
 from agendaEvent import agendaEvent
 from IPersistencia import *
 from MongoDBPersistance import *
+from Agenda import Agenda
+from AgendaPersistance import *
+from AgendaPersistenceInterface import *
+from Usuari import *
+from UsuariPersistance import *
+from UsuariPersistenceInterface import *
 
 class TestAgendaEvent(unittest.TestCase):
 
@@ -93,6 +99,92 @@ class TestMongoDBPersistence(unittest.TestCase):
         # Test delete
         delete_result = self.db_persistence.delete(event_id)
         self.assertEqual(delete_result, 1)
+
+class TestUsuari(unittest.TestCase):
+    def setUp(self):
+        self.user = Usuari("Juan", "Perez", "Español")
+
+    def test_getters(self):
+        self.assertEqual(self.user.get_nom(), "Juan")
+        self.assertEqual(self.user.get_cognom(), "Perez")
+        self.assertEqual(self.user.get_nacionalitat(), "Español")
+
+    def test_setters(self):
+        self.user.set_nom("Pedro")
+        self.user.set_cognom("Gomez")
+        self.user.set_nacionalitat("Argentino")
+
+        self.assertEqual(self.user.get_nom(), "Pedro")
+        self.assertEqual(self.user.get_cognom(), "Gomez")
+        self.assertEqual(self.user.get_nacionalitat(), "Argentino")
+
+
+class TestUsuariPersistenceInterface(unittest.TestCase):
+    def setUp(self):
+        # Conexión a la base de datos de prueba
+        self.client = MongoClient("mongodb+srv://2023guillermojaume:BJuxQ3eShBhktxam@cluster0.qw12na8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+        self.db = self.client["test_db"]
+        self.collection = self.db["test_collection"]
+        self.interface = UsuariPersistenceInterface(self.collection)
+
+    def tearDown(self):
+        # Limpiar la colección después de cada test
+        self.collection.delete_many({})
+
+    def test_create_read_delete_user(self):
+        # Test create
+        user_data = {"nom": "Juan", "cognom": "Perez", "nacionalitat": "Español"}
+        result = self.interface.create_user(user_data)
+        self.assertTrue(result.acknowledged)
+        self.assertIsNotNone(result.inserted_id)
+
+        # Test read
+        user_id = str(result.inserted_id)
+        user = self.interface.read_user(user_id)
+        self.assertEqual(user["nom"], "Juan")
+        self.assertEqual(user["cognom"], "Perez")
+        self.assertEqual(user["nacionalitat"], "Español")
+
+        # Test delete
+        delete_result = self.interface.delete_user(user_id)
+        self.assertEqual(delete_result.deleted_count, 1)
+
+
+class TestAgendaMongoDBPersistence(unittest.TestCase):
+    def setUp(self):
+        # Conexión a la base de datos de prueba
+        self.client = MongoClient("mongodb+srv://2023guillermojaume:BJuxQ3eShBhktxam@cluster0.qw12na8.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+        self.db = self.client["test_db"]
+        self.collection = self.db["test_collection"]
+        self.persistence = AgendaMongoDBPersistence(self.collection)
+
+    def tearDown(self):
+        # Limpiar la colección después de cada test
+        self.collection.delete_many({})
+
+    def test_create_read_delete_agenda(self):
+        # Test save
+        agenda_data = {
+            "date": "2024-04-16",
+            "duration": 2,
+            "title": "Reunión de equipo",
+            "description": "descripcion",
+            "tags": ["reunión", "equipo"],
+            "location": "Oficina"
+        }
+        result = self.persistence.create_agenda(agenda_data)
+        self.assertIsNotNone(result)
+
+        # Test get
+        agenda_id = str(result.inserted_id)
+        agenda = self.persistence.read_agenda(agenda_id)
+        self.assertEqual(agenda["title"], "Reunión de equipo")
+        self.assertEqual(agenda["description"], "descripcion")
+
+        # Test delete
+        delete_result = self.persistence.delete_agenda(agenda_id)
+        self.assertEqual(delete_result.deleted_count, 1)
+
 
 if __name__ == '__main__':
     unittest.main()
